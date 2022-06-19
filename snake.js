@@ -45,15 +45,16 @@ class Apple {
       this.x =
         Math.floor((Math.random() * canvas.width) / snake.size) * snake.size;
       this.y =
-        Math.floor((Math.random() * canvas.height) / snake.size) * snake.size;
+        Math.floor((Math.random() * canvas.width) / snake.size) * snake.size;
+
       for (let i = 0; i < snake.tail.length; i++) {
-        if (this.x == snake.tail[i].x && this.y == snake.tail[i].y) {
+        if (this.x == snake.tail[i].x && this.y == snake.tail[i].y)
           isTouching = true;
-        }
       }
-      if (!isTouching) break;
-      this.color = "pink";
       this.size = snake.size;
+      this.color = "pink";
+      console.log(this.x, this.y);
+      if (!isTouching) break;
     }
   }
 }
@@ -61,17 +62,15 @@ class Apple {
 var canvas = document.getElementById("canvas");
 
 var snake = new Snake(20, 20, 20);
-
 var apple = new Apple();
 
 var canvasContext = canvas.getContext("2d");
-
 window.onload = () => {
   gameLoop();
 };
 
 function gameLoop() {
-  setInterval(show, 1000 / 15); // 15 es nuestro valor de fps
+  setInterval(show, 1000 / 15); // Donde 15 es el valor de nuestro FPS
 }
 
 function show() {
@@ -83,6 +82,17 @@ function update() {
   canvasContext.clearRect(0, 0, canvas.width, canvas.height);
   console.log("update");
   snake.move();
+  eatApple();
+}
+
+function eatApple() {
+  if (
+    snake.tail[snake.tail.length - 1].x == apple.x &&
+    snake.tail[snake.tail.length - 1].y == apple.y
+  ) {
+    snake.tail[snake.tail.length] = { x: apple.x, y: apple.y };
+    apple = new Apple();
+  }
 }
 
 function draw() {
@@ -118,10 +128,10 @@ window.addEventListener("keydown", (event) => {
     if (event.keyCode == 37 && snake.rotateX != 1) {
       snake.rotateX = -1;
       snake.rotateY = 0;
-    } else if (event.keyCode == 38 && snake.rotateY != 1) {
+    } else if (event.keyCode == 38 && snake.rotateY != -1) {
       snake.rotateX = 0;
       snake.rotateY = -1;
-    } else if (event.keyCode == 39 && snake.rotateX != -1) {
+    } else if (event.keyCode == 39 && snake.rotateX != 1) {
       snake.rotateX = 1;
       snake.rotateY = 0;
     } else if (event.keyCode == 40 && snake.rotateY != -1) {
